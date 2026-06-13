@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Country Explorer</h1>
+        <p>Click on a flag to learn more about a country</p>
+    </header>
+    <main>
+        <div id="flag-container" class="flag-grid">
+            <!-- Flags will be inserted here by JavaScript -->
+        </div>
+    </main>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="country-name"></h2>
+            <div class="info-grid">
+                <div><span class="label">Continent:</span> <span id="continent"></span></div>
+                <div><span class="label">Population:</span> <span id="population"></span></div>
+                <div><span class="label">States/Provinces:</span> <span id="states"></span></div>
+                <div><span class="label">Independent:</span> <span id="independent"></span></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
