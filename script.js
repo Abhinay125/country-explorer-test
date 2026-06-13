@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const statesEl = document.getElementById('states');
     const independentEl = document.getElementById('independent');
 
-    // Fetch data from REST Countries API
-    fetch('https://restcountries.com/v3.1/all')
+    // Fetch data from the alternative dataset
+    fetch('https://raw.githubusercontent.com/mledoze/countries/master/countries.json')
         .then(response => response.json())
         .then(countries => {
             // Sort countries by name for consistent ordering
@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 flagItem.classList.add('flag-item');
 
                 const img = document.createElement('img');
-                img.src = country.flags.png; // Using PNG flag
+                // Use flagcdn.com for flag images
+                img.src = `https://flagcdn.com/w40/${country.cca2.toLowerCase()}.png`;
                 img.alt = `${country.name.common} flag`;
                 flagItem.appendChild(img);
 
@@ -32,9 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 info.appendChild(h3);
                 flagItem.appendChild(info);
 
+                // Store the country data for use in the modal
+                flagItem.countryData = {
+                    name: country.name.common,
+                    continent: country.region || 'N/A',
+                    population: 'N/A', // Dataset doesn't have population
+                    states: 'N/A', // Dataset doesn't have states/provinces
+                    independent: country.independent ? 'Yes' : 'No'
+                };
+
                 // Add click event to show modal
                 flagItem.addEventListener('click', () => {
-                    showCountryDetails(country);
+                    showCountryDetails(flagItem.countryData);
                 });
 
                 flagContainer.appendChild(flagItem);
@@ -45,26 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
             flagContainer.innerHTML = '<p>Failed to load countries. Please try again later.</p>';
         });
 
-    function showCountryDetails(country) {
-        countryNameEl.textContent = country.name.common;
-
-        // Continent: we use the region property (which is like continent) or subregion?
-        // The API has: region (e.g., Africa, Americas, etc.) and subregion.
-        // We'll use region for continent.
-        continentEl.textContent = country.region || 'N/A';
-
-        // Population
-        populationEl.textContent = country.population ? country.population.toLocaleString() : 'N/A';
-
-        // Number of States/Provinces: we don't have this directly in the API.
-        // We can look for subregion? But that's not states.
-        // Alternatively, we can look at the 'borders' property? That gives neighboring countries, not states.
-        // The API does not provide states/provinces.
-        // We'll show N/A for now.
-        statesEl.textContent = 'N/A';
-
-        // Independent
-        independentEl.textContent = country.independent ? 'Yes' : 'No';
+    function showCountryDetails(data) {
+        countryNameEl.textContent = data.name;
+        continentEl.textContent = data.continent;
+        populationEl.textContent = data.population;
+        statesEl.textContent = data.states;
+        independentEl.textContent = data.independent;
 
         // Show modal
         modal.style.display = 'flex';
